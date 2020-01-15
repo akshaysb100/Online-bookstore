@@ -6,14 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import com.onlinebookstore.model.Book;
+import com.onlinebookstore.repository.OnlineBookRepository;
+
+import java.util.List;
 
 @Service
 public class OnlineBookService {
 
     @Autowired
-    CustomerRepository repository ;
+    OnlineBookRepository onlineBookRepository;
 
-    public void  addDetailsOfCustomer(Customer customer) {
+    @Autowired
+    CustomerRepository repository;
+
+    public void addDetailsOfCustomer(Customer customer) {
         repository.save(customer);
     }
 
@@ -24,5 +31,13 @@ public class OnlineBookService {
 
     public void setMockObjects(CustomerRepository customerRepository) {
         repository = customerRepository;
+    }
+
+    public List<Book> getDataAsList() {
+        return onlineBookRepository.findAll();
+    }
+
+    public void setmockObjects(OnlineBookRepository repository) {
+        onlineBookRepository = repository;
     }
 }
