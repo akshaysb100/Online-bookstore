@@ -5,9 +5,11 @@ import com.onlinebookstore.repository.CustomerRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.repository.OnlineBookRepository;
-import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,41 +18,52 @@ import static org.mockito.Mockito.when;
 public class OnlineBookServiceTest {
 
     private final String filePath = "/home/user/projectSimulation/Online-bookstore/src/test/java/resources/Sample.csv";
-    CustomerRepository customerRepository;
+    @Mock
     OnlineBookRepository bookRepository;
-    private OnlineBookService onlineBookService;
 
+    @Mock
+    CustomerRepository customerRepository;
 
+    @InjectMocks
+    OnlineBookService bookService = new OnlineBookService();
 
     @Before
     public void setUp() throws Exception {
-        customerRepository = mock(CustomerRepository.class);
-        bookRepository = mock(OnlineBookRepository.class);
-        this.onlineBookService = new OnlineBookService();
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void givenListOfBooks_WhenListEmpty_ShouldThrowBookStoreException() {
+        try {
+            long expectedSize = 0;
+            when(bookRepository.count()).thenReturn(expectedSize);
+            List<Book> dataAsList = bookService.getDataAsList();
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+            Assert.assertEquals(BookStoreException.ExceptionType.NO_BOOKS_FOUND,e.type);
+        }
     }
 
     @Test
     public void givenCustomer_WhenEntersDetailsToPlaceOrder_ShouldGetAddedToCustomerDetailsRepository() {
-        onlineBookService.setMockObjects(customerRepository);
-        Customer customer = new Customer(1L, "Manoj Bajpayee", "9552967330", "400116", "Sant Maharaj Temple,Aundh", "Pune");
+        Customer customer = mock(Customer.class);
         when(customerRepository.save(customer)).thenReturn(customer);
         when(customerRepository.findById(1L)).thenReturn(java.util.Optional.of(customer));
-        onlineBookService.addDetailsOfCustomer(customer);
-        Customer customerDetails = onlineBookService.getCustomerDetails(1L);
+        bookService.addDetailsOfCustomer(customer);
+        Customer customerDetails = bookService.getCustomerDetails(1L);
         Assert.assertEquals(customer, customerDetails);
     }
 
-
-
     @Test
-    public void givenListOfBooks_WhenLoaded_ShouldGetAddedToTheDataBase() {
-        OnlineBookService bookStoreService = new OnlineBookService();
-        Book book = new Book("Chetan Bhagat", "dsafkjkdasnfckscdnf", "the secret", 123.0, "zlcvnlxsnvlsv");
-        List<Book> bookList = new ArrayList<>();
-        bookList.add(book);
-        bookStoreService.setmockObjects(bookRepository);
-        when(bookRepository.findAll()).thenReturn(bookList);
-        List<Book> dataAsList = bookStoreService.getDataAsList();
-        Assert.assertEquals(bookList, dataAsList);
+    public void givenARequestToShowAllBooks_WhenDatabaseHasAMultipleBooks_ShouldReturnListOfBooksFromDatabase() {
+        try {
+            List<Book> bookList = mock(List.class);
+            when(bookRepository.count()).thenReturn(52L);
+            when(bookRepository.findAll()).thenReturn(bookList);
+            List<Book> dataAsList = bookService.getDataAsList();
+            Assert.assertEquals(bookList, dataAsList);
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+        }
     }
 }

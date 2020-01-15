@@ -20,6 +20,13 @@ public class OnlineBookService {
     @Autowired
     CustomerRepository repository;
 
+    public List<Book> getDataAsList() throws BookStoreException {
+        if (onlineBookRepository.count() == 0) {
+            throw new BookStoreException("NO Books Found", BookStoreException.ExceptionType.NO_BOOKS_FOUND);
+        }
+        return onlineBookRepository.findAll();
+    }
+
     public void addDetailsOfCustomer(Customer customer) {
         repository.save(customer);
     }
@@ -27,17 +34,5 @@ public class OnlineBookService {
     public Customer getCustomerDetails(Long customerId) {
         Optional<Customer> customerDetails = repository.findById(customerId);
         return customerDetails.get();
-    }
-
-    public void setMockObjects(CustomerRepository customerRepository) {
-        repository = customerRepository;
-    }
-
-    public List<Book> getDataAsList() {
-        return onlineBookRepository.findAll();
-    }
-
-    public void setmockObjects(OnlineBookRepository repository) {
-        onlineBookRepository = repository;
     }
 }

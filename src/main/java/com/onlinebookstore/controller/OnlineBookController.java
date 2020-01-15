@@ -2,6 +2,7 @@ package com.onlinebookstore.controller;
 
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.model.Customer;
+import com.onlinebookstore.service.BookStoreException;
 import com.onlinebookstore.service.OnlineBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,11 @@ public class OnlineBookController {
 
     @GetMapping("/showBooks")
     public List<Book> getBooks(){
-        return onlineBookService.getDataAsList();
+        try {
+            return onlineBookService.getDataAsList();
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
