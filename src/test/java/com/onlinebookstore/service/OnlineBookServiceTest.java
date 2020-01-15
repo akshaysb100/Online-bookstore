@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 
 public class OnlineBookServiceTest {
 
-    private final String filePath = "/home/user/projectSimulation/Online-bookstore/src/test/java/resources/Sample.csv";
     @Mock
     OnlineBookRepository bookRepository;
 
@@ -37,7 +36,6 @@ public class OnlineBookServiceTest {
             when(bookRepository.count()).thenReturn(expectedSize);
             List<Book> dataAsList = bookService.getDataAsList();
         } catch (BookStoreException e) {
-            e.printStackTrace();
             Assert.assertEquals(BookStoreException.ExceptionType.NO_BOOKS_FOUND, e.type);
         }
     }
