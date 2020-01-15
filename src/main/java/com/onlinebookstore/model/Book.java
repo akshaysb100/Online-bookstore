@@ -35,13 +35,13 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", author='" + author + '\'' +
-                ", title='" + title + '\'' +
-                ", image='" + image + '\'' +
-                ", price='" + price + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "\n\nBook{" +
+                "\n\tid=" + id +
+                "\n\tauthor=" + author +
+                "\n\ttitle=" + title +
+                "\n\timage=" + image +
+                "\n\tprice=" + price +
+                "\n\tdescription=" + description +
+                "\n}";
     }
 }

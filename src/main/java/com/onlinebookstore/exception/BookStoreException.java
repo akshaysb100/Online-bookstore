@@ -1,4 +1,4 @@
-package com.onlinebookstore.service;
+package com.onlinebookstore.exception;
 
 public class BookStoreException extends Exception {
     public enum ExceptionType {
