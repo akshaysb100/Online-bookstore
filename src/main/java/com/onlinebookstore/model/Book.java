@@ -1,33 +1,28 @@
 package com.onlinebookstore.model;
 
-import com.opencsv.bean.CsvBindByName;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.net.URL;
 
 @Entity
-@Table(name = "Books")
+@Table(name = "books")
 public class Book {
     @Id
-    @CsvBindByName
     private Long id;
 
-    @CsvBindByName
+
     private String author;
 
-    @CsvBindByName
     private String title;
 
-    @CsvBindByName
     private String image;
 
-    @CsvBindByName
     private Double price;
 
-    @CsvBindByName
     private String description;
+
+    public Book() {
+    }
 
     public Book(String author, String title, String image, Double price, String description) {
 
@@ -37,7 +32,6 @@ public class Book {
         this.price = price;
         this.description = description;
     }
-
 
     @Override
     public String toString() {
