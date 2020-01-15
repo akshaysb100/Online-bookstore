@@ -3,29 +3,27 @@ package com.onlinebookstore.controller;
 import com.onlinebookstore.exception.BookStoreException;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.model.Customer;
-import com.onlinebookstore.service.CustomerService;
+import com.onlinebookstore.model.OrderDetailsDTO;
 import com.onlinebookstore.service.OnlineBookService;
+import com.onlinebookstore.service.UpdateDbService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.configuration.IMockitoConfiguration;
-import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class OnlineBookControllerTest {
 
     @Mock
-    CustomerService customerService;
+    OnlineBookService bookService;
 
     @Mock
-    OnlineBookService bookService;
+    UpdateDbService dbUpdater;
 
     @InjectMocks
     OnlineBookController onlineBookController;
@@ -48,9 +46,25 @@ public class OnlineBookControllerTest {
     }
 
     @Test
-    public void givenCustomer_WhenAdded_ShouldReturn() {
-        Customer myCustomer = mock(Customer.class);
-        onlineBookController.addCustomerDetails(myCustomer);
-        verify(customerService).addDetailsOfCustomer(myCustomer);
+    public void givenIGoOnCustomerDetailsPage_ShouldReturnBookId() {
+        Long outputId = onlineBookController.showEmptyCustomerDetailsPAge(1L);
+        Assert.assertEquals(1L,outputId,0.0);
+    }
+
+    @Test
+    public void givenCustomerPassesDetails_WhenABookIsSelected_ShouldReturnOrderSummary() {
+        Customer mockedCustomer = mock(Customer.class);
+        String expectedString = "output string";
+        when(bookService.getOrderDetails(mockedCustomer,1L)).thenReturn(expectedString);
+        String actualString = onlineBookController.addCustomerDetails(mockedCustomer, 1L);
+        Assert.assertEquals(expectedString,actualString);
+    }
+
+    @Test
+    public void givenOrderIsPlaced_ShouldUpdateTheDatabase() {
+        OrderDetailsDTO mockedDetails = mock(OrderDetailsDTO.class);
+        String outputString = onlineBookController.doneShopping(mockedDetails);
+        verify(dbUpdater).updateDatabase(mockedDetails);
+        Assert.assertEquals("ORDER PLACED",outputString);
     }
 }

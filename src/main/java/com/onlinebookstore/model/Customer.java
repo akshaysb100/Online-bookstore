@@ -1,10 +1,12 @@
 package com.onlinebookstore.model;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "Customers")
+@Table(name = "customer")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +14,6 @@ public class Customer {
 
     @Pattern(regexp = "^[A-Z]{1}[a-z]{2,}$")
     private String customerName;
-
 
     @Pattern(regexp = "(91)\\s[7-9][0-9]{9}")
     private String mobileNumber;
@@ -22,19 +23,16 @@ public class Customer {
 
     private String address;
 
+    private String country;
+
+    public String getCountry() {
+        return country;
+    }
+
     @Pattern(regexp = "^[A-Z]{1}[a-z]{2,}$")
     private String city;
 
     public Customer() {
-    }
-
-    public Customer(Long id, String customerName, String mobileNumber, String pincode, String address, String city) {
-        this.id = id;
-        this.customerName = customerName;
-        this.mobileNumber = mobileNumber;
-        this.pincode = pincode;
-        this.address = address;
-        this.city = city;
     }
 
     public String getCustomerName() {
