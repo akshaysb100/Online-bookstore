@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CustomerSerivceTest {
+public class CustomerServiceTest {
 
     @Mock
     CustomerRepository customerRepository;
