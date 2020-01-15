@@ -23,7 +23,10 @@ public class OnlineBookService {
     @Autowired
     OnlineBookRepository onlineBookRepository;
 
-    public List<Book> getDataAsList() {
+    public List<Book> getDataAsList() throws BookStoreException {
+        if(onlineBookRepository.count() == 0) {
+            throw new BookStoreException("NO Books Found", BookStoreException.ExceptionType.NO_BOOKS_FOUND);
+        }
         return onlineBookRepository.findAll();
     }
 
