@@ -4,14 +4,17 @@ import com.onlinebookstore.exception.BookStoreException;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.model.Customer;
 import com.onlinebookstore.model.OrderDetailsDTO;
+import com.onlinebookstore.response.Response;
 import com.onlinebookstore.service.OnlineBookService;
 import com.onlinebookstore.service.UpdateDbService;
+import com.onlinebookstore.utility.ErrorResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -38,33 +41,49 @@ public class OnlineBookControllerTest {
         try {
             List<Book> bookList = mock(List.class);
             when(bookService.getDataAsList()).thenReturn(bookList);
-            String books = onlineBookController.getBooks();
-            Assert.assertEquals(bookList.toString(),books);
+            ResponseEntity<List<Book>> books = onlineBookController.getBooks();
+            Assert.assertEquals(200,books.getStatusCode().value());
         } catch (BookStoreException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void givenIGoOnCustomerDetailsPage_ShouldReturnBookId() {
-        Long outputId = onlineBookController.showEmptyCustomerDetailsPAge(1L);
-        Assert.assertEquals(1L,outputId,0.0);
+    public void givenCSVFile_WhenRecordsNotAddedToDatabase_ShouldReturnListOfRecords() {
+        BookStoreException bookStoreException = mock(BookStoreException.class);
+        try {
+            when(bookService.getDataAsList()).thenThrow(bookStoreException);
+            ResponseEntity<List<Book>> books = onlineBookController.getBooks();
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+            Assert.assertEquals(bookStoreException,e);
+        }
     }
 
     @Test
     public void givenCustomerPassesDetails_WhenABookIsSelected_ShouldReturnOrderSummary() {
-        Customer mockedCustomer = mock(Customer.class);
-        String expectedString = "output string";
-        when(bookService.getOrderDetails(mockedCustomer,1L)).thenReturn(expectedString);
-        String actualString = onlineBookController.addCustomerDetails(mockedCustomer, 1L);
-        Assert.assertEquals(expectedString,actualString);
+        try {
+            Book book = mock(Book.class);
+            when(bookService.getBookDetails(1L,"india")).thenReturn(book);
+            ResponseEntity<Book> output = onlineBookController.getBookDetails(1L, "india");
+            Assert.assertEquals(200,output.getStatusCode().value());
+        } catch (ErrorResponse errorResponse) {
+            errorResponse.printStackTrace();
+        }
+
     }
 
     @Test
     public void givenOrderIsPlaced_ShouldUpdateTheDatabase() {
-        OrderDetailsDTO mockedDetails = mock(OrderDetailsDTO.class);
-        String outputString = onlineBookController.doneShopping(mockedDetails);
-        verify(dbUpdater).updateDatabase(mockedDetails);
-        Assert.assertEquals("ORDER PLACED",outputString);
+        Customer customer = mock(Customer.class);
+        OrderDetailsDTO dto = mock(OrderDetailsDTO.class);
+        try {
+            when(bookService.getOrderDetails(customer, 1L)).thenReturn(dto);
+            Response output = onlineBookController.convertToOrderDetailsDetails(customer,1L);
+            verify(dbUpdater).updateDatabase(dto);
+            Assert.assertEquals(200, output.getStatusCode());
+        } catch (ErrorResponse errorResponse) {
+            errorResponse.printStackTrace();
+        }
     }
 }

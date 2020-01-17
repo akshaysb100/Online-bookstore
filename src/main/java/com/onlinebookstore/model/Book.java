@@ -17,7 +17,7 @@ public class Book {
 
     private String image;
 
-    private Float price;
+    private Double price;
 
     private Long numberOfCopies;
 
@@ -26,7 +26,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String author, String title, String image, Float price, String description) {
+    public Book(String author, String title, String image, Double price, String description) {
 
         this.author = author;
         this.title = title;
@@ -51,7 +51,7 @@ public class Book {
         return image;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -61,6 +61,10 @@ public class Book {
 
     public Long getNumberOfCopies() {
         return numberOfCopies;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public void setNumberOfCopies(Long numberOfCopies) {

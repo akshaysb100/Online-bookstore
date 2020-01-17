@@ -1,15 +1,14 @@
 package com.onlinebookstore.exception;
 
-public class BookStoreException extends Exception {
-    public enum ExceptionType {
-        NO_BOOKS_FOUND
+public class BookStoreException extends RuntimeException {
+
+    String message;
+
+    public BookStoreException() {
     }
 
-    public BookStoreException(String message, ExceptionType type) {
+    public BookStoreException(String message) {
         super(message);
-        this.type = type;
     }
-
-    public ExceptionType type;
 
 }
