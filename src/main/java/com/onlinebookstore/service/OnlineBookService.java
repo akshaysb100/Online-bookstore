@@ -41,14 +41,13 @@ public class OnlineBookService {
     }
 
     public Book getBookDetails(Long bookId, String country) throws BookStoreException {
-        Optional<Book> optionalBook = onlineBookRepository.findById(bookId);
-        if(!optionalBook.isEmpty()) {
+        Book book=onlineBookRepository.findBookById(bookId);
+        if(book == null) {
             throw  new BookStoreException(environment.getProperty("status.bookStatusCode.bookNotFound"));
         }
-        Book myBook = optionalBook.get();
         Double price = calculatorService.calculatePriceOfBookAsPerCountry(bookId, country);
-        myBook.setPrice(price);
-        return myBook;
+        book.setPrice(price);
+        return book;
     }
 
     public OrderDetailsDTO getOrderDetails(@Valid Customer customer, Long bookId) throws BookStoreException {

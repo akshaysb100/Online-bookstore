@@ -65,22 +65,34 @@ public class OnlineBookServiceTest {
         }
     }
 
-/*    @Test
+    @Test
     public void givenBookIdAs1AndCountryAsIndia_WhenBooksPriceIs193_ShouldReturnBookWithShippingCharges() {
         try {
             Book book = mock(Book.class);
-            when(bookRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(book));
+            when(bookRepository.findBookById(1L)).thenReturn(book);
             when(book.getPrice()).thenReturn(243.0);
-            when(java.util.Optional.of(book).isPresent()).thenReturn(false);
-            when(java.util.Optional.of(book).get()).thenReturn(book);
             when(calculatorService.calculatePriceOfBookAsPerCountry(1L, "india")).thenReturn(243.0);
             Book outputBook = bookService.getBookDetails(1L, "india");
             verify(book).setPrice(243.0);
-            Assert.assertEquals(243.0, outputBook.getPrice(),0.0);
         } catch (BookStoreException errorResponse) {
             errorResponse.printStackTrace();
         }
-    }*/
+    }
+
+    @Test
+    public void givenBookIdAs76AndCountryAsIndia_WhenBooksNotFound_ShouldReturnThrowException() {
+        try {
+            Book book = mock(Book.class);
+            when(bookRepository.findBookById(1L)).thenReturn(null);
+            when(environment.getProperty("status.bookStatusCode.bookNotFound")).thenReturn("Unable to get books from database!!!");
+            when(calculatorService.calculatePriceOfBookAsPerCountry(1L, "india")).thenReturn(243.0);
+            Book outputBook = bookService.getBookDetails(1L, "india");
+            verify(book).setPrice(243.0);
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+            Assert.assertEquals("Unable to get books from database!!!",e.getMessage());
+        }
+    }
 
     @Test
     public void givenBookIdAndCustomer_WhenPlacedOrder_ShouldReturnWholeOrderDetails() {
