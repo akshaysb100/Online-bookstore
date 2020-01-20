@@ -1,6 +1,6 @@
 package com.onlinebookstore.response;
 
-public class Response extends Throwable {
+public class Response {
 
     private String message;
 

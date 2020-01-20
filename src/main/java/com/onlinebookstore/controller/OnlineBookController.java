@@ -10,10 +10,10 @@ import com.onlinebookstore.service.OnlineBookService;
 import com.onlinebookstore.service.UpdateDbService;
 import com.onlinebookstore.utility.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.tools.java.Environment;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class OnlineBookController {
         each book has buy button
         clicking on buy button sends book id to the next page
      */
-    @GetMapping("/firstPage")
+    @GetMapping("/showBooks")
     public ResponseEntity<List<Book>> getBooks(){
         List<Book> dataAsList = onlineBookService.getDataAsList();
         return new ResponseEntity<List<Book>>(dataAsList, HttpStatus.OK);
@@ -58,11 +58,11 @@ public class OnlineBookController {
         updates database/inventory
      */
     //ORDER COMPLETE PAGE
-    @GetMapping("/fourthPage/{bookId}")
-    public Response convertToOrderDetailsDetails(@RequestBody Customer customer, @PathVariable Long bookId) throws BookStoreException, ErrorResponse {
+    @PostMapping("/orderConfirmation/{bookId}")
+    public Response convertToOrderDetailsDetails(@RequestBody Customer customer, @PathVariable Long bookId) {
         OrderDetailsDTO bookDetails = onlineBookService.getOrderDetails(customer, bookId);
         dbUpdater.updateDatabase(bookDetails);
-        return new Response("Database updated successfully",HttpStatus.OK.value());
+        return new Response(" Order updated successfully",HttpStatus.OK.value());
     }
 
 
