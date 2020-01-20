@@ -91,4 +91,7 @@ public class Book {
         return numberOfCopies.toString();
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

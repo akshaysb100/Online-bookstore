@@ -10,13 +10,13 @@ import com.onlinebookstore.service.OnlineBookService;
 import com.onlinebookstore.service.UpdateDbService;
 import com.onlinebookstore.utility.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/books")
 public class OnlineBookController {
@@ -37,9 +37,8 @@ public class OnlineBookController {
         clicking on buy button sends book id to the next page
      */
     @GetMapping("/showBooks")
-    public ResponseEntity<List<Book>> getBooks(){
-        List<Book> dataAsList = onlineBookService.getDataAsList();
-        return new ResponseEntity<List<Book>>(dataAsList, HttpStatus.OK);
+    public String getBooks() {
+        return onlineBookService.getDataAsList();
     }
 
     /*SUMMARY PAGE ->
@@ -49,8 +48,8 @@ public class OnlineBookController {
     //ORDER SUMMARY PAGE
     @GetMapping("/getBookDetail/{bookId}")
     public ResponseEntity<Book> getBookDetails(@PathVariable Long bookId, @RequestParam String country) throws BookStoreException, ErrorResponse {
-            Book bookDetails = onlineBookService.getBookDetails(bookId, country);
-            return new ResponseEntity<Book>(bookDetails,HttpStatus.OK);
+        Book bookDetails = onlineBookService.getBookDetails(bookId, country);
+        return new ResponseEntity<Book>(bookDetails, HttpStatus.OK);
     }
 
     /*FINAL PAGE ->
@@ -62,14 +61,18 @@ public class OnlineBookController {
     public Response convertToOrderDetailsDetails(@RequestBody Customer customer, @PathVariable Long bookId) {
         OrderDetailsDTO bookDetails = onlineBookService.getOrderDetails(customer, bookId);
         dbUpdater.updateDatabase(bookDetails);
-        return new Response(" Order updated successfully",HttpStatus.OK.value());
+        return new Response(" Order updated successfully", HttpStatus.OK.value());
     }
 
+    @GetMapping("/searchByAuthorOrTitle")
+    public ResponseEntity<Book> searchByAuthorOrtitle(@RequestParam String searchElement){
+        Book book = onlineBookService.searchByAuthor(searchElement);
+        return new ResponseEntity<Book>(book,HttpStatus.OK);
+    }
 
-/*
-    @PostMapping("/fourthPage")
-    public String doneShopping(@RequestBody OrderDetailsDTO orderDetails) {
-        dbUpdater.updateDatabase(orderDetails);
-        return "ORDER PLACED";
-    }*/
+    @GetMapping("/sortByPrice")
+    public ResponseEntity<List<Book>> searchByPrice(@RequestParam String sortType){
+        List<Book> bookList = onlineBookService.sortByPrice(sortType);
+        return new ResponseEntity<List<Book>>(bookList,HttpStatus.OK);
+    }
 }
