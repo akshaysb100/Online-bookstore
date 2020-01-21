@@ -27,6 +27,9 @@ public class OnlineBookService {
     OnlineBookRepository onlineBookRepository;
 
     @Autowired
+    Gson gson;
+
+    @Autowired
     private Environment environment;
 
     public String getDataAsList() {
@@ -37,7 +40,7 @@ public class OnlineBookService {
             String updatedImageUrl = book.getImage().substring(0, book.getImage().length() - 1);
             book.setImage(updatedImageUrl);
         });
-        return new Gson().toJson(bookList);
+        return gson.toJson(bookList);
     }
 
     public Book getBookDetails(Long bookId, String country) throws BookStoreException {
