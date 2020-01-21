@@ -37,6 +37,7 @@ public class OnlineBookServiceTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
+/*
 
     @Test
     public void givenListOfBooks_WhenListEmpty_ShouldThrowBookStoreException() {
@@ -64,6 +65,7 @@ public class OnlineBookServiceTest {
             e.printStackTrace();
         }
     }
+*/
 
     @Test
     public void givenBookIdAs1AndCountryAsIndia_WhenBooksPriceIs193_ShouldReturnBookWithShippingCharges() {
