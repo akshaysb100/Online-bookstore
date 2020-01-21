@@ -44,6 +44,7 @@ public class BookPriceCalculatorServiceTest {
     @Ignore
     public void givenBookIdAs1AndCountryAsIndia_WhenCountryNameIsWrong_ShouldThrowException() {
         try {
+
             Book book = mock(Book.class);
             when(bookRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(book));
             when(environment.getProperty("status.bookStatusCode.CountryError")).thenReturn("Country not found!!!");
