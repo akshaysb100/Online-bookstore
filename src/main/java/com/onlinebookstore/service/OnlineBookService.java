@@ -76,9 +76,6 @@ public class OnlineBookService {
             return onlineBookRepository.findAll(Sort.by(Sort.Direction.ASC,"price"));
         else if(sortType.equals("title"))
             return onlineBookRepository.findAll(Sort.by(Sort.Direction.ASC,"title"));
-        return null;
-
+        throw  new BookStoreException(environment.getProperty("status.bookStatusCode.SortTypeNotFound"));
     }
-
-
 }
