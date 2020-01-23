@@ -65,13 +65,13 @@ public class OnlineBookController {
     }
 
     @GetMapping("/searchByAuthorOrTitle")
-    public ResponseEntity<Book> searchByAuthorOrtitle(@RequestParam String searchElement){
-        Book book = onlineBookService.searchByAuthor(searchElement);
-        return new ResponseEntity<Book>(book,HttpStatus.OK);
+    public ResponseEntity<List<Book>> searchByAuthorOrTitle(@RequestParam String searchElement){
+        List<Book> bookList = onlineBookService.searchByAuthor(searchElement);
+        return new ResponseEntity<List<Book>>(bookList,HttpStatus.OK);
     }
 
     @GetMapping("/sortByPrice")
-    public ResponseEntity<List<Book>> searchByPrice(@RequestParam String sortType){
+    public ResponseEntity<List<Book>> sortByPrice(@RequestParam String sortType){
         List<Book> bookList = onlineBookService.sortByPrice(sortType);
         return new ResponseEntity<List<Book>>(bookList,HttpStatus.OK);
     }

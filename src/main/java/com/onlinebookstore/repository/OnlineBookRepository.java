@@ -12,13 +12,13 @@ public interface OnlineBookRepository extends JpaRepository<Book,Long> {
 
     Book findBookById(long bookid);
 
-    Optional<Book> findByAuthor(String author);
+    List<Book> findByAuthor(String author);
 
-    Optional<Book> findByTitle(String title);
+    List<Book> findByTitle(String title);
 
-    Optional<List<Book>> findByOrderByPriceAsc();
+    List<Book> findByOrderByPriceAsc();
 
-    Optional<List<Book>> findByOrderByTitle();
+    List<Book> findByOrderByTitle();
 
     
 }

@@ -37,7 +37,7 @@ public class OnlineBookService {
             throw new BookStoreException("NO Books Found");
         List<Book> bookList = onlineBookRepository.findAll();
         bookList.stream().forEach(book -> {
-            String updatedImageUrl = book.getImage().substring(0, book.getImage().length() - 1);
+            String updatedImageUrl = book.getImage().substring(0, book.getImage().length() - 0);
             book.setImage(updatedImageUrl);
         });
         return gson.toJson(bookList);
@@ -59,12 +59,14 @@ public class OnlineBookService {
         return new OrderDetailsDTO(customer,bookId,totalPrice);
     }
 
-    public Book searchByAuthor(String searchElement){
-        Optional<Book> book1 = onlineBookRepository.findByAuthor(searchElement);
-        Optional<Book> book2 = onlineBookRepository.findByTitle(searchElement);
-        if(book1.isPresent() || book2.isPresent())
-            return book1.get();
-        throw new BookStoreException(environment.getProperty("status.bookStatusCode.AuthorNotFound"));
+    public List<Book> searchByAuthor(String searchElement){//book title : gone girl
+        List<Book> byAuthor = onlineBookRepository.findByAuthor(searchElement);// null
+        List<Book> byTitle = onlineBookRepository.findByTitle(searchElement);//gone girl book
+        if(!byAuthor.isEmpty())
+            return byAuthor;
+        else  if ( !byTitle.isEmpty())
+            return byTitle;
+        throw new BookStoreException(environment.getProperty("status.bookStatusCode.AuthorOrTitleNotFound"));
 
     }
 

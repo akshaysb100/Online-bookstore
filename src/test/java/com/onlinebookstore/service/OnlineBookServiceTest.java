@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.repository.OnlineBookRepository;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -113,5 +114,61 @@ public class OnlineBookServiceTest {
         when(calculatorService.calculatePriceOfBookAsPerCountry(1L,"india")).thenReturn(243.0);
         OrderDetailsDTO orderDetails = bookService.getOrderDetails(customer, 1L);
         Assert.assertEquals(243.0,orderDetails.getTotalPrice(),0.0);
+    }
+
+    @Test
+    @Ignore
+    public void givenListOfBooks_WhenSearchByTitle_ShouldReturnDesiredBook() {
+        List<Book> bookList = mock(List.class);
+        Book correctBook = mock(Book.class);
+        when(bookRepository.findByTitle("The Girl in Room 105'")).thenReturn(bookList);
+        List<Book> list = bookService.searchByAuthor("The Girl in Room 105'");
+        Assert.assertEquals(bookList,list);
+    }
+
+    @Test
+    @Ignore
+    public void givenListOfBooks_WhenSearchByAuthor_ShouldReturnDesiredBook() {
+        List<Book> bookList = mock(List.class);
+        Book correctBook = mock(Book.class);
+        when(bookRepository.findByAuthor("Chetan Bhagat'")).thenReturn(bookList);
+        List<Book> list = bookService.searchByAuthor("Chetan Bhagat'");
+        Assert.assertEquals(bookList,list);
+    }
+
+    @Test
+    @Ignore
+    public void givenListOfBooks_WhenSearchByUnWorngAuthor_ShouldThrowCustomException() {
+        try {
+            List<Book> bookList = mock(List.class);
+            Book correctBook = mock(Book.class);
+            when(bookRepository.findByAuthor("Kumud Garg'")).thenReturn(bookList);
+            when(bookList.isEmpty()).thenReturn(true);
+            when(environment.getProperty("status.bookStatusCode.AuthorOrTitleNotFound")).thenReturn("Such Type Author Or Title Book Not Found!!!");
+            List<Book> books = bookService.searchByAuthor("Kumud Garg'");
+        }
+        catch (BookStoreException e) {
+            Assert.assertEquals("Such Type Author Or Title Book Not Found!!!", e.getMessage());
+        }
+    }
+
+    @Test
+    @Ignore
+    public void givenListOfBooks_WhenSortByPrice_ShouldReturnDesiredBook() {
+        List<Book> bookList = mock(List.class);
+        Book correctBook = mock(Book.class);
+        when(bookRepository.findAll(Sort.by(Sort.Direction.ASC,"price"))).thenReturn(bookList);
+        List<Book> list = bookService.sortByPrice( "price");
+        Assert.assertEquals(bookList,list);
+    }
+
+    @Test
+    @Ignore
+    public void givenListOfBooks_WhenSortByTitle_ShouldReturnDesiredBook() {
+        List<Book> bookList = mock(List.class);
+        Book correctBook = mock(Book.class);
+        when(bookRepository.findAll(Sort.by(Sort.Direction.ASC,"title"))).thenReturn(bookList);
+        List<Book> list = bookService.sortByPrice( "title");
+        Assert.assertEquals(bookList,list);
     }
 }
