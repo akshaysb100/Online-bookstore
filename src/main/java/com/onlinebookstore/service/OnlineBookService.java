@@ -37,7 +37,7 @@ public class OnlineBookService {
             throw new BookStoreException("NO Books Found");
         List<Book> bookList = onlineBookRepository.findAll();
         bookList.stream().forEach(book -> {
-            String updatedImageUrl = book.getImage().substring(0, book.getImage().length() - 1);
+            String updatedImageUrl = book.getImage().substring(0, book.getImage().length() - 0);
             book.setImage(updatedImageUrl);
         });
         return gson.toJson(bookList);
