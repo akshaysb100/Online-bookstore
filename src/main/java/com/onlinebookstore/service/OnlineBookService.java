@@ -66,6 +66,8 @@ public class OnlineBookService {
             return byAuthor;
         else  if ( !byTitle.isEmpty())
             return byTitle;
+        else if(byAuthor.isEmpty() || byTitle.isEmpty())
+            return onlineBookRepository.findAll();
         throw new BookStoreException(environment.getProperty("status.bookStatusCode.AuthorNotFound"));
 
     }
