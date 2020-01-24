@@ -59,11 +59,13 @@ public class OnlineBookService {
         return new OrderDetailsDTO(customer,bookId,totalPrice);
     }
 
-    public Book searchByAuthor(String searchElement){
-        Optional<Book> book1 = onlineBookRepository.findByAuthor(searchElement);
-        Optional<Book> book2 = onlineBookRepository.findByTitle(searchElement);
-        if(book1.isPresent() || book2.isPresent())
-            return book1.get();
+    public List<Book> searchByAuthor(String searchElement){//book title : gone girl
+        List<Book> byAuthor = onlineBookRepository.findByAuthor(searchElement);// null
+        List<Book> byTitle = onlineBookRepository.findByTitle(searchElement);//gone girl book
+        if(!byAuthor.isEmpty())
+            return byAuthor;
+        else  if ( !byTitle.isEmpty())
+            return byTitle;
         throw new BookStoreException(environment.getProperty("status.bookStatusCode.AuthorNotFound"));
 
     }
@@ -74,9 +76,6 @@ public class OnlineBookService {
             return onlineBookRepository.findAll(Sort.by(Sort.Direction.ASC,"price"));
         else if(sortType.equals("title"))
             return onlineBookRepository.findAll(Sort.by(Sort.Direction.ASC,"title"));
-        return null;
-
+        throw  new BookStoreException(environment.getProperty("status.bookStatusCode.SortTypeNotFound"));
     }
-
-
 }

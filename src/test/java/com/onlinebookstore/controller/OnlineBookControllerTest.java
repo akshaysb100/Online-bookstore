@@ -1,6 +1,5 @@
 package com.onlinebookstore.controller;
 
-import com.google.gson.Gson;
 import com.onlinebookstore.exception.BookStoreException;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.model.Customer;
@@ -15,7 +14,10 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class OnlineBookControllerTest {
 
     @Mock
     UpdateDbService dbUpdater;
+
 
     @InjectMocks
     OnlineBookController onlineBookController;
@@ -58,7 +61,7 @@ public class OnlineBookControllerTest {
             String books = onlineBookController.getBooks();
         } catch (BookStoreException e) {
             e.printStackTrace();
-            Assert.assertEquals(bookStoreException,e);
+            Assert.assertEquals(bookStoreException, e);
         }
     }
 
@@ -66,9 +69,9 @@ public class OnlineBookControllerTest {
     public void givenCustomerPassesDetails_WhenABookIsSelected_ShouldReturnOrderSummary() {
         try {
             Book book = mock(Book.class);
-            when(bookService.getBookDetails(1L,"india")).thenReturn(book);
+            when(bookService.getBookDetails(1L, "india")).thenReturn(book);
             ResponseEntity<Book> output = onlineBookController.getBookDetails(1L, "india");
-            Assert.assertEquals(200,output.getStatusCode().value());
+            Assert.assertEquals(200, output.getStatusCode().value());
         } catch (ErrorResponse errorResponse) {
             errorResponse.printStackTrace();
         }
@@ -79,10 +82,37 @@ public class OnlineBookControllerTest {
     public void givenOrderIsPlaced_ShouldUpdateTheDatabase() {
         Customer customer = mock(Customer.class);
         OrderDetailsDTO dto = mock(OrderDetailsDTO.class);
+
         when(bookService.getOrderDetails(customer, 1L)).thenReturn(dto);
-        Response output = onlineBookController.convertToOrderDetailsDetails(customer,1L);
+        Response output = onlineBookController.convertToOrderDetailsDetails(customer, 1L);
         verify(dbUpdater).updateDatabase(dto);
         Assert.assertEquals(200, output.getStatusCode());
+    }
+
+    @Test
+    public void givenListOfBooks_WhenSearchByAuthor_ShouldReturnDesireBookList() {
+        try {
+            List<Book> bookList = mock(List.class);
+            Book book = mock(Book.class);
+            when(bookService.searchByAuthor("Chetan Bhagat'")).thenReturn(bookList);
+            ResponseEntity<List<Book>> books = onlineBookController.searchByAuthorOrTitle("Chetan Bhagat'");
+            Assert.assertEquals(200, books.getStatusCode().value());
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenListOfBooks_WhenSortByPrice_ShouldReturnDesireBookList() {
+        try {
+            List<Book> bookList = mock(List.class);
+            Book book = mock(Book.class);
+            when(bookService.sortByPrice("price")).thenReturn(bookList);
+            ResponseEntity<List<Book>> books = onlineBookController.sortByPrice("price");
+            Assert.assertEquals(200, books.getStatusCode().value());
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+        }
     }
 }
 
