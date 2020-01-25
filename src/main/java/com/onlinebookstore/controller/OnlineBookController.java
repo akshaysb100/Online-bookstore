@@ -66,7 +66,7 @@ public class OnlineBookController {
 
     @GetMapping("/searchByAuthorOrTitle")
     public ResponseEntity<List<Book>> searchByAuthorOrTitle(@RequestParam String searchElement){
-        List<Book> bookList = onlineBookService.searchByAuthor(searchElement);
+        List<Book> bookList = onlineBookService.searchBookBy(searchElement);
         return new ResponseEntity<List<Book>>(bookList,HttpStatus.OK);
     }
 

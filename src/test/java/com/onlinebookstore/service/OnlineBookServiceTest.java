@@ -1,6 +1,5 @@
 package com.onlinebookstore.service;
 
-import com.google.gson.Gson;
 import com.onlinebookstore.exception.BookStoreException;
 import com.onlinebookstore.model.Customer;
 import com.onlinebookstore.model.OrderDetailsDTO;
@@ -15,7 +14,6 @@ import com.onlinebookstore.model.Book;
 import com.onlinebookstore.repository.OnlineBookRepository;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,56 +107,30 @@ public class OnlineBookServiceTest {
     }
 
     @Test
-    public void givenListOfBooks_WhenSearchByTitle_ShouldReturnDesiredBook() {
-        List<Book> bookList = mock(List.class);
-        Book correctBook = mock(Book.class);
-        when(bookRepository.findByTitleContaining("The Girl in Room 105'")).thenReturn(bookList);
-        List<Book> list = bookService.searchByAuthor("The Girl in Room 105'");
-        Assert.assertEquals(bookList,list);
+    public void givenListOfBooks_WhenSearchByTitleOrAuthor_ShouldReturnListOfBooksContainingSearchStringInTitleNameOrAuthorName() {
+        List<Book> bookList = new ArrayList<>();
+        Book book = mock(Book.class);
+        bookList.add(book);
+        when(bookRepository.findByTitleContaining("The Girl in Room 105")).thenReturn(bookList);
+        when(bookRepository.findByAuthorContaining("The Girl in Room 105")).thenReturn(bookList);
+        List<Book> list = bookService.searchBookBy("The Girl in Room 105");
+        Assert.assertEquals(2,list.size());
     }
 
     @Test
-    public void givenListOfBooks_WhenSearchByAuthor_ShouldReturnDesiredBook() {
-        List<Book> bookList = mock(List.class);
-        Book correctBook = mock(Book.class);
-        when(bookRepository.findByAuthorContaining("Chetan Bhagat'")).thenReturn(bookList);
-        List<Book> list = bookService.searchByAuthor("Chetan Bhagat'");
-        Assert.assertEquals(bookList,list);
-    }
-
-    @Test
-    public void givenListOfBooks_WhenSearchByUnWorngAuthor_ShouldThrowCustomException() {
+    public void givenListOfBooks_WhenSearchByUnWrongAuthor_ShouldThrowCustomException() {
         try {
-            List<Book> bookList = mock(List.class);
-            Book correctBook = mock(Book.class);
-            when(bookRepository.findByAuthorContaining("Kumud Garg'")).thenReturn(bookList);
-            when(bookList.isEmpty()).thenReturn(true);
-            when(environment.getProperty("status.bookStatusCode.AuthorOrTitleNotFound")).thenReturn("Such Type Author Or Title Book Not Found!!!");
-            List<Book> books = bookService.searchByAuthor("Kumud Garg'");
+            List<Book> bookList = new ArrayList<>();
+            when(bookRepository.findByAuthorContaining("wrong name")).thenReturn(bookList);
+            when(bookRepository.findByTitleContaining("wrong name")).thenReturn(bookList);
+            when(environment.getProperty("status.bookStatusCode.invalidSearchInput")).thenReturn("No books or author found with the given search elements");
+            List<Book> books = bookService.searchBookBy("wrong name");
         }
         catch (BookStoreException e) {
-            Assert.assertEquals("Such Type Author Or Title Book Not Found!!!", e.getMessage());
+            e.printStackTrace();
+            Assert.assertEquals("No books or author found with the given search elements", e.getMessage());
         }
     }
 
-    @Test
-    @Ignore
-    public void givenListOfBooks_WhenSortByPrice_ShouldReturnDesiredBook() {
-        List<Book> bookList = mock(List.class);
-        Book correctBook = mock(Book.class);
-        when(bookRepository.findAll(Sort.by(Sort.Direction.ASC,"price"))).thenReturn(bookList);
-        List<Book> list = bookService.sortByPrice( "price");
-        Assert.assertEquals(bookList,list);
-    }
-
-    @Test
-    @Ignore
-    public void givenListOfBooks_WhenSortByTitle_ShouldReturnDesiredBook() {
-        List<Book> bookList = mock(List.class);
-        Book correctBook = mock(Book.class);
-        when(bookRepository.findAll(Sort.by(Sort.Direction.ASC,"title"))).thenReturn(bookList);
-        List<Book> list = bookService.sortByPrice( "title");
-        Assert.assertEquals(bookList,list);
-    }
 }
 

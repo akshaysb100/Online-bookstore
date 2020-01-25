@@ -14,10 +14,9 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -30,6 +29,9 @@ public class OnlineBookControllerTest {
 
     @Mock
     UpdateDbService dbUpdater;
+
+    @Mock
+    Environment environment;
 
 
     @InjectMocks
@@ -94,7 +96,7 @@ public class OnlineBookControllerTest {
         try {
             List<Book> bookList = mock(List.class);
             Book book = mock(Book.class);
-            when(bookService.searchByAuthor("Chetan Bhagat'")).thenReturn(bookList);
+            when(bookService.searchBookBy("Chetan Bhagat'")).thenReturn(bookList);
             ResponseEntity<List<Book>> books = onlineBookController.searchByAuthorOrTitle("Chetan Bhagat'");
             Assert.assertEquals(200, books.getStatusCode().value());
         } catch (BookStoreException e) {
@@ -114,5 +116,21 @@ public class OnlineBookControllerTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenListOfBooks_WhenSearchByWrongAuthor_ShouldReturnCustomException() {
+        List<Book>  list2 = mock(List.class);
+        BookStoreException exception = new BookStoreException(environment.getProperty("status.bookStatusCode.bookNotFound"), HttpStatus.NOT_FOUND);
+        try {
+             when(bookService.searchBookBy("dhsakhdh")).thenThrow(exception);
+            ResponseEntity<List<Book>> output = onlineBookController.searchByAuthorOrTitle("dhsakhdh");
+        } catch (BookStoreException e) {
+            e.printStackTrace();
+            Assert.assertEquals(404,e.getStatus().value());
+        }
+    }
+
+
+
 }
 

@@ -14,10 +14,12 @@ public interface OnlineBookRepository extends JpaRepository<Book,Long> {
 
     Book findBookById(long bookid);
 
-    List<Book> findByAuthorContaining(String author);
+    List<Book> findByAuthor(String author);
+
+    List<Book> findByTitle(String title);
 
     List<Book> findByTitleContaining(String titleToSearch);
 
-
+    List<Book> findByAuthorContaining(String authorToSearch);
 
 }

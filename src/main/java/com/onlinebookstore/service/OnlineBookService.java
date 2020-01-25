@@ -14,6 +14,7 @@ import com.onlinebookstore.model.Book;
 import com.onlinebookstore.repository.OnlineBookRepository;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -58,20 +59,13 @@ public class OnlineBookService {
         return new OrderDetailsDTO(customer,bookId,totalPrice);
     }
 
-    public List<Book> searchByAuthor(String searchElement){//book title : gone girl
-        List<Book> byAuthor = onlineBookRepository.findByAuthorContaining(searchElement);// null
-        List<Book> byTitle = onlineBookRepository.findByTitleContaining(searchElement);//gone girl book
-        /*if(!byAuthor.isEmpty())
-            return byAuthor;
-        else  if ( !byTitle.isEmpty())
-            return byTitle;*/
-//        if(byAuthor.isEmpty() || byTitle.isEmpty())
-//            return onlineBookRepository.findAll();
-//        throw new BookStoreException(environment.getProperty("status.bookStatusCode.AuthorNotFound"));
+    public List<Book> searchBookBy(String searchElement){
+        List<Book> byAuthor = onlineBookRepository.findByAuthorContaining(searchElement);
+        List<Book> byTitle = onlineBookRepository.findByTitleContaining(searchElement);
         List<Book> searchOutput = Stream.concat(byAuthor.stream(), byTitle.stream())
                 .collect(toList());
         if (searchOutput.isEmpty())
-            throw new BookStoreException("status.bookStatusCode.invalidSearchInput", HttpStatus.NOT_FOUND);
+            throw  new BookStoreException(environment.getProperty("status.bookStatusCode.invalidSearchInput"), HttpStatus.NOT_FOUND);
         return searchOutput;
     }
 

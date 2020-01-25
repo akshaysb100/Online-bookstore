@@ -7,9 +7,6 @@ public class BookStoreException extends RuntimeException {
     private String message;
     private HttpStatus status;
 
-    public BookStoreException() {
-    }
-
     public BookStoreException(String message) {
         super(message);
     }
