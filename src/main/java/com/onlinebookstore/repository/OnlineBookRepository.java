@@ -18,11 +18,10 @@ public interface OnlineBookRepository extends JpaRepository<Book,Long> {
 
     List<Book> findByTitle(String title);
 
-    List<Book> findByOrderByPriceAsc();
-
-    List<Book> findByOrderByTitle();
-
     List<Book> findByTitleContaining(String titleToSearch);
+
+    List<Book> findByAuthorContaining(String authorToSearch);
+
 
 
 

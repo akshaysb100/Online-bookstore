@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.repository.OnlineBookRepository;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,7 +66,7 @@ public class OnlineBookService {
     }
 
     public List<Book> searchByAuthor(String searchElement){//book title : gone girl
-        List<Book> byAuthor = onlineBookRepository.findByAuthor(searchElement);// null
+        List<Book> byAuthor = onlineBookRepository.findByAuthorContaining(searchElement);// null
         List<Book> byTitle = onlineBookRepository.findByTitleContaining(searchElement);//gone girl book
         /*if(!byAuthor.isEmpty())
             return byAuthor;
@@ -76,7 +78,8 @@ public class OnlineBookService {
         List<Book> newList = Stream.concat(byAuthor.stream(), byTitle.stream())
                 .collect(toList());
         if (newList.isEmpty())
-            return onlineBookRepository.findAll();
+            throw  new BookStoreException(environment.getProperty("status.bookStatusCode.bookNotFound"), HttpStatus.NOT_FOUND);
+//            return onlineBookRepository.findAll();
         return newList;
     }
 

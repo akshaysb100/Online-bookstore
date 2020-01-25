@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,8 @@ public class OnlineBookControllerTest {
 
     @Mock
     UpdateDbService dbUpdater;
+
+    Environment environment;
 
 
     @InjectMocks
@@ -114,5 +117,21 @@ public class OnlineBookControllerTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenListOfBooks_WhenSearchByWrongAuthor_ShouldReturnCustomException() {
+        ResponseEntity<List<Book>> books = null;
+        BookStoreException exception = mock(BookStoreException.class);
+        try {
+             when(bookService.searchByAuthor("dhsakhdh")).thenThrow(exception);
+             books = onlineBookController.searchByAuthorOrTitle("dhsakhdh");
+        } catch (BookStoreException e) {
+            System.out.println("aaaaaaaaaaaaaaaaa");
+            Assert.assertEquals( exception.code, e);
+        }
+    }
+
+
+
 }
 
