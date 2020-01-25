@@ -9,7 +9,7 @@ import com.onlinebookstore.repository.OrderDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UpdateDbService {
@@ -28,7 +28,7 @@ public class UpdateDbService {
 
     public void updateDatabase(OrderDetailsDTO orderDetails) {
         this.updateCustomerDetails(orderDetails.getCustomer());
-        this.updateBookDetails(orderDetails.getBookId());
+        this.updateBookDetails(orderDetails.getBookIds());
         this.updateOrderDetails(orderDetails);
     }
 
@@ -36,12 +36,13 @@ public class UpdateDbService {
         orderDetailsRepository.save(orderDetails);
     }
 
-    private void updateBookDetails(Long bookId) {
-        Optional<Book> optionalBook = onlineBookRepository.findById(bookId);
-        Book book = optionalBook.get();
-        long updatedCopiesCount = book.getNumberOfCopies() - 1;
-        book.setNumberOfCopies(updatedCopiesCount);
-        onlineBookRepository.save(book);
+    private void updateBookDetails(List<Long> orderBookIds) {
+        orderBookIds.stream().forEach( bookId -> {
+                    Book book = onlineBookRepository.findBookById(bookId);
+                    long updatedCopiesCount = book.getNumberOfCopies() - 1;
+                    book.setNumberOfCopies(updatedCopiesCount);
+                    onlineBookRepository.save(book);
+                });
     }
 
     private void updateCustomerDetails(Customer customer) {

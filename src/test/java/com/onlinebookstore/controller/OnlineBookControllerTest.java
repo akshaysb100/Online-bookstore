@@ -2,6 +2,7 @@ package com.onlinebookstore.controller;
 
 import com.onlinebookstore.exception.BookStoreException;
 import com.onlinebookstore.model.Book;
+import com.onlinebookstore.model.CartDetails;
 import com.onlinebookstore.model.Customer;
 import com.onlinebookstore.model.OrderDetailsDTO;
 import com.onlinebookstore.response.Response;
@@ -18,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -68,26 +70,15 @@ public class OnlineBookControllerTest {
     }
 
     @Test
-    public void givenCustomerPassesDetails_WhenABookIsSelected_ShouldReturnOrderSummary() {
-        try {
-            Book book = mock(Book.class);
-            when(bookService.getBookDetails(1L, "india")).thenReturn(book);
-            ResponseEntity<Book> output = onlineBookController.getBookDetails(1L, "india");
-            Assert.assertEquals(200, output.getStatusCode().value());
-        } catch (ErrorResponse errorResponse) {
-            errorResponse.printStackTrace();
-        }
-
-    }
-
-    @Test
     public void givenOrderIsPlaced_ShouldUpdateTheDatabase() {
         Customer customer = mock(Customer.class);
-        OrderDetailsDTO dto = mock(OrderDetailsDTO.class);
-
-        when(bookService.getOrderDetails(customer, 1L)).thenReturn(dto);
-        Response output = onlineBookController.convertToOrderDetailsDetails(customer, 1L);
-        verify(dbUpdater).updateDatabase(dto);
+        OrderDetailsDTO detailsDTO = mock(OrderDetailsDTO.class);
+        CartDetails cartDetails = mock(CartDetails.class);
+        List<Long> bookIds = new ArrayList<>();
+        bookIds.add(1L);
+        when(bookService.getOrderDetails(cartDetails)).thenReturn(detailsDTO);
+        Response output = onlineBookController.convertToOrderDetailsDetails(cartDetails);
+        verify(dbUpdater).updateDatabase(detailsDTO);
         Assert.assertEquals(200, output.getStatusCode());
     }
 
@@ -98,19 +89,6 @@ public class OnlineBookControllerTest {
             Book book = mock(Book.class);
             when(bookService.searchBookBy("Chetan Bhagat'")).thenReturn(bookList);
             ResponseEntity<List<Book>> books = onlineBookController.searchByAuthorOrTitle("Chetan Bhagat'");
-            Assert.assertEquals(200, books.getStatusCode().value());
-        } catch (BookStoreException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void givenListOfBooks_WhenSortByPrice_ShouldReturnDesireBookList() {
-        try {
-            List<Book> bookList = mock(List.class);
-            Book book = mock(Book.class);
-            when(bookService.sortByPrice("price")).thenReturn(bookList);
-            ResponseEntity<List<Book>> books = onlineBookController.sortByPrice("price");
             Assert.assertEquals(200, books.getStatusCode().value());
         } catch (BookStoreException e) {
             e.printStackTrace();

@@ -11,10 +11,9 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -39,14 +38,17 @@ public class UpdateDbServiceTest {
 
     @Test
     public void givenOrderDetails_ShouldGetUpdatedInDatabase() {
-        OrderDetailsDTO orderDetails = mock(OrderDetailsDTO.class);
-        Book book = mock(Book.class);
         Customer customer = mock(Customer.class);
+        Book book = mock(Book.class);
+        List<Long> bookIds = new ArrayList<>();
+        bookIds.add(1L);
+        OrderDetailsDTO orderDetails = new OrderDetailsDTO(customer,bookIds,700.00);
         when(orderDetailsRepository.save(orderDetails)).thenReturn(orderDetails);
         when(customerRepository.save(orderDetails.getCustomer())).thenReturn(customer);
-        when(onlineBookRepository.findById(orderDetails.getBookId())).thenReturn(Optional.of(book));
-        when(onlineBookRepository.save(book)).thenReturn(book);
+        when(onlineBookRepository.findBookById(1L)).thenReturn(book);
+        when(book.getNumberOfCopies()).thenReturn(10L);
         dbService.updateDatabase(orderDetails);
+        verify(book).setNumberOfCopies(9L);
         verify(orderDetailsRepository).save(orderDetails);
         verify(customerRepository).save(orderDetails.getCustomer());
         verify(onlineBookRepository).save(book);

@@ -2,6 +2,7 @@ package com.onlinebookstore.service;
 
 import com.google.gson.Gson;
 import com.onlinebookstore.exception.BookStoreException;
+import com.onlinebookstore.model.CartDetails;
 import com.onlinebookstore.model.Customer;
 import com.onlinebookstore.model.OrderDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,6 @@ import static java.util.stream.Collectors.toList;
 public class OnlineBookService {
 
     @Autowired
-    BookPriceCalculatorService calculatorService;
-
-    @Autowired
     OnlineBookRepository onlineBookRepository;
 
     @Autowired
@@ -43,22 +41,6 @@ public class OnlineBookService {
 
     }
 
-    public Book getBookDetails(Long bookId, String country) throws BookStoreException {
-        Book book=onlineBookRepository.findBookById(bookId);
-        if(book == null) {
-            throw  new BookStoreException(environment.getProperty("status.bookStatusCode.bookNotFound"));
-        }
-        Double price = calculatorService.calculatePriceOfBookAsPerCountry(bookId, country);
-        book.setPrice(price);
-        return book;
-    }
-
-    public OrderDetailsDTO getOrderDetails(@Valid Customer customer, Long bookId) throws BookStoreException {
-        String country = customer.getCountry();
-        Double totalPrice = calculatorService.calculatePriceOfBookAsPerCountry(bookId, country);
-        return new OrderDetailsDTO(customer,bookId,totalPrice);
-    }
-
     public List<Book> searchBookBy(String searchElement){
         List<Book> byAuthor = onlineBookRepository.findByAuthorContaining(searchElement);
         List<Book> byTitle = onlineBookRepository.findByTitleContaining(searchElement);
@@ -69,12 +51,7 @@ public class OnlineBookService {
         return searchOutput;
     }
 
-
-    public List<Book> sortByPrice(String sortType){
-        if(sortType.equals("price"))
-            return onlineBookRepository.findAll(Sort.by(Sort.Direction.ASC,"price"));
-        else if(sortType.equals("title"))
-            return onlineBookRepository.findAll(Sort.by(Sort.Direction.ASC,"title"));
-        throw  new BookStoreException(environment.getProperty("status.bookStatusCode.SortTypeNotFound"));
+    public OrderDetailsDTO getOrderDetails(CartDetails cartDetails) {
+        return new OrderDetailsDTO(cartDetails.getCustomer(), cartDetails.getListOfOrderedBooks(),cartDetails.getTotalPrice());
     }
 }

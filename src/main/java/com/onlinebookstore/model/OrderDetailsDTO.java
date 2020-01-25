@@ -1,14 +1,11 @@
 package com.onlinebookstore.model;
 
-import com.onlinebookstore.model.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import javax.validation.Valid;
+import java.util.List;
 
 @Entity
 public class OrderDetailsDTO {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long orderId;
@@ -18,14 +15,15 @@ public class OrderDetailsDTO {
     @OneToOne
     private Customer customer;
 
-    private Long bookId;
+    @ElementCollection
+    private List<Long> bookIds;
 
     public OrderDetailsDTO() {
     }
 
-    public OrderDetailsDTO(@Valid Customer customer, Long bookId, Double totalPrice) {
+    public OrderDetailsDTO(@Valid Customer customer, List<Long> bookIdList, Double totalPrice) {
         this.customer = customer;
-        this.bookId = bookId;
+        this.bookIds = bookIdList;
         this.totalPrice = totalPrice;
     }
 
@@ -37,8 +35,8 @@ public class OrderDetailsDTO {
         return customer;
     }
 
-    public Long getBookId() {
-        return bookId;
+    public List<Long> getBookIds() {
+        return bookIds;
     }
 
     public Double getTotalPrice() {
@@ -51,7 +49,7 @@ public class OrderDetailsDTO {
                 "\n\torderId=" + orderId +
                 "\n\ttotalPrice=" + totalPrice +
                 "\n\tcustomer=" + customer +
-                "\n\tbookId=" + bookId +
+                "\n\tbookId=" + bookIds +
                 "\n}";
     }
 }
