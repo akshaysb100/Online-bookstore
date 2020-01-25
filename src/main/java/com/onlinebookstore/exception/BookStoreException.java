@@ -1,8 +1,11 @@
 package com.onlinebookstore.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class BookStoreException extends RuntimeException {
 
-    String message;
+    private String message;
+    private HttpStatus status;
 
     public BookStoreException() {
     }
@@ -11,4 +14,12 @@ public class BookStoreException extends RuntimeException {
         super(message);
     }
 
+    public BookStoreException(String message, HttpStatus status) {
+        super(message);
+        this.status = status;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
 }

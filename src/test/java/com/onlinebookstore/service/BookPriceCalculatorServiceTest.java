@@ -34,17 +34,17 @@ public class BookPriceCalculatorServiceTest {
     @Test
     public void givenBookIdAs1AndCountryAsIndia_WhenBooksPriceIs193_ShouldReturnTotalPriceAs243() {
         Book book = mock(Book.class);
-        when(bookRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(book));
+        when(bookRepository.findBookById(1L)).thenReturn(book);
         when(book.getPrice()).thenReturn(193.0);
         Double price = calculatorService.calculatePriceOfBookAsPerCountry(1L, "india");
         Assert.assertEquals(243,price,0.0);
     }
 
+/*
     @Test
     @Ignore
     public void givenBookIdAs1AndCountryAsIndia_WhenCountryNameIsWrong_ShouldThrowException() {
         try {
-
             Book book = mock(Book.class);
             when(bookRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(book));
             when(environment.getProperty("status.bookStatusCode.CountryError")).thenReturn("Country not found!!!");
@@ -55,4 +55,5 @@ public class BookPriceCalculatorServiceTest {
         }
 
     }
+*/
 }

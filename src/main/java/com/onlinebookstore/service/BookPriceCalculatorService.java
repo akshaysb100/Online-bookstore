@@ -24,17 +24,14 @@ public class BookPriceCalculatorService {
     private Environment environment;
 
     public BookPriceCalculatorService() {
-        this.enumMapper = new HashMap<String,ShippingChargeProvider>();
+        this.enumMapper = new HashMap<>();
         this.enumMapper.put("INDIA",CountryWiseShippingCharges.INDIA);
         this.enumMapper.put("OTHER",CountryWiseShippingCharges.OTHER_COUNTRY);
     }
 
     public Double calculatePriceOfBookAsPerCountry(Long id, String countryOfCustomer) {
-        Book book = onlineBookRepository.findById(id).get();
+        Book book = onlineBookRepository.findBookById(id);
         ShippingChargeProvider provider = enumMapper.get(countryOfCustomer.toUpperCase());
-        if(provider==null) {
-          throw  new CountryNotFoundException(environment.getProperty("status.bookStatusCode.CountryError"));
-        }
         Double totalBookPrice = provider.getShippingCharge() + book.getPrice();
         return totalBookPrice;
     }

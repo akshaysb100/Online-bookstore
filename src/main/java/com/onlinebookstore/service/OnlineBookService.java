@@ -8,14 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.onlinebookstore.model.Book;
 import com.onlinebookstore.repository.OnlineBookRepository;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -36,15 +35,11 @@ public class OnlineBookService {
     @Autowired
     private Environment environment;
 
-    public String getDataAsList() {
+    public List<Book> getDataAsList() {
         if (onlineBookRepository.count() == 0)
-            throw new BookStoreException("NO Books Found");
-        List<Book> bookList = onlineBookRepository.findAll();
-        bookList.stream().forEach(book -> {
-            String updatedImageUrl = book.getImage().substring(0, book.getImage().length() - 0);
-            book.setImage(updatedImageUrl);
-        });
-        return gson.toJson(bookList);
+            throw new BookStoreException(environment.getProperty("status.bookStatusCode.bookNotFound"),HttpStatus.NOT_FOUND);
+        return onlineBookRepository.findAll();
+
     }
 
     public Book getBookDetails(Long bookId, String country) throws BookStoreException {
@@ -64,7 +59,7 @@ public class OnlineBookService {
     }
 
     public List<Book> searchByAuthor(String searchElement){//book title : gone girl
-        List<Book> byAuthor = onlineBookRepository.findByAuthor(searchElement);// null
+        List<Book> byAuthor = onlineBookRepository.findByAuthorContaining(searchElement);// null
         List<Book> byTitle = onlineBookRepository.findByTitleContaining(searchElement);//gone girl book
         /*if(!byAuthor.isEmpty())
             return byAuthor;
@@ -73,11 +68,11 @@ public class OnlineBookService {
 //        if(byAuthor.isEmpty() || byTitle.isEmpty())
 //            return onlineBookRepository.findAll();
 //        throw new BookStoreException(environment.getProperty("status.bookStatusCode.AuthorNotFound"));
-        List<Book> newList = Stream.concat(byAuthor.stream(), byTitle.stream())
+        List<Book> searchOutput = Stream.concat(byAuthor.stream(), byTitle.stream())
                 .collect(toList());
-        if (newList.isEmpty())
-            return onlineBookRepository.findAll();
-        return newList;
+        if (searchOutput.isEmpty())
+            throw new BookStoreException("status.bookStatusCode.invalidSearchInput", HttpStatus.NOT_FOUND);
+        return searchOutput;
     }
 
 

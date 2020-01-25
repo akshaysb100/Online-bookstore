@@ -37,7 +37,7 @@ public class OnlineBookController {
         clicking on buy button sends book id to the next page
      */
     @GetMapping("/showBooks")
-    public String getBooks() {
+    public List<Book> getBooks() {
         return onlineBookService.getDataAsList();
     }
 

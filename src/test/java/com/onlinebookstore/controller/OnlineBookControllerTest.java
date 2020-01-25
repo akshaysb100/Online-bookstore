@@ -58,7 +58,7 @@ public class OnlineBookControllerTest {
         BookStoreException bookStoreException = mock(BookStoreException.class);
         try {
             when(bookService.getDataAsList()).thenThrow(bookStoreException);
-            String books = onlineBookController.getBooks();
+            List<Book> books = onlineBookController.getBooks();
         } catch (BookStoreException e) {
             e.printStackTrace();
             Assert.assertEquals(bookStoreException, e);
