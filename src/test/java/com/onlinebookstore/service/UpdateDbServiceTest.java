@@ -26,6 +26,9 @@ public class UpdateDbServiceTest {
     CustomerRepository customerRepository;
 
     @Mock
+    MailSenderService mailSenderService;
+
+    @Mock
     OnlineBookRepository onlineBookRepository;
 
     @InjectMocks
@@ -52,5 +55,6 @@ public class UpdateDbServiceTest {
         verify(orderDetailsRepository).save(orderDetails);
         verify(customerRepository).save(orderDetails.getCustomer());
         verify(onlineBookRepository).save(book);
+        verify(mailSenderService).sendMail(orderDetails);
     }
 }
