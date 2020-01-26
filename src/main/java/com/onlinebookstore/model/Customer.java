@@ -3,6 +3,7 @@ package com.onlinebookstore.model;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
 @Entity
@@ -15,7 +16,7 @@ public class Customer {
     @Pattern(regexp = "^[A-Z]{1}[a-z]{2,}$")
     private String customerName;
 
-    @Pattern(regexp = "(91)\\s[7-9][0-9]{9}")
+    @Pattern(regexp = "[7-9][0-9]{9}")
     private String mobileNumber;
 
     @Pattern(regexp = "^[0-9]{6}$|^[0-9]{3}\\s{1}[0-9]{3}$")
@@ -24,6 +25,9 @@ public class Customer {
     private String address;
 
     private String country;
+
+    @Pattern(regexp = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$")
+    private String emailId;
 
     public String getCountry() {
         return country;
@@ -37,6 +41,10 @@ public class Customer {
 
     public String getCustomerName() {
         return customerName;
+    }
+
+    public String getEmailId() {
+        return emailId;
     }
 
     public String getMobileNumber() {

@@ -21,6 +21,9 @@ public class UpdateDbService {
     CustomerRepository customerRepository;
 
     @Autowired
+    MailSenderService mailSenderService;
+
+    @Autowired
     OnlineBookRepository onlineBookRepository;
 
     public UpdateDbService() {
@@ -30,6 +33,7 @@ public class UpdateDbService {
         this.updateCustomerDetails(orderDetails.getCustomer());
         this.updateBookDetails(orderDetails.getBookIds());
         this.updateOrderDetails(orderDetails);
+        mailSenderService.sendMail(orderDetails);
     }
 
     private void updateOrderDetails(OrderDetailsDTO orderDetails) {

@@ -35,7 +35,7 @@ public class OnlineBookController {
         return new ResponseEntity<List<Book>>(bookList,HttpStatus.OK);
     }
 
-    @PostMapping("/orderConfirmation/")
+    @PostMapping("/orderConfirmation")
     public Response convertToOrderDetailsDetails(@RequestBody CartDetails cartDetails) {
         OrderDetailsDTO orderDetails = onlineBookService.getOrderDetails(cartDetails);
         dbUpdater.updateDatabase(orderDetails);
