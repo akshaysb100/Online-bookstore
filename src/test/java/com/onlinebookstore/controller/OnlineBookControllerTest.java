@@ -43,19 +43,6 @@ public class OnlineBookControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
     }
-/*
-
-    @Test
-    public void givenCSVFile_WhenRecordsAddedToDatabase_ShouldReturnListOfRecords() {
-        try {
-            String books = onlineBookController.getBooks();
-
-            Assert.assertEquals(,);
-        } catch (BookStoreException e) {
-            e.printStackTrace();
-        }
-    }
-*/
 
     @Test
     public void givenCSVFile_WhenRecordsNotAddedToDatabase_ShouldReturnListOfRecords() {

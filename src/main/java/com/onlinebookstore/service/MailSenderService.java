@@ -20,7 +20,6 @@ public class MailSenderService {
     @Autowired
     private JavaMailSender JavaMailSender;
 
-
     public void sendMail(OrderDetailsDTO orderDetails) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(orderDetails.getCustomer().getEmailId());

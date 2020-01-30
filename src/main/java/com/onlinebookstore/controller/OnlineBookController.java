@@ -42,4 +42,9 @@ public class OnlineBookController {
         return new Response(" Order updated successfully", HttpStatus.OK.value());
     }
 
+    @GetMapping("/sortByPrice")
+    public List<Book> sortByPrice() {
+        List<Book> orderDetails = onlineBookService.sortByPrice();
+        return orderDetails;
+    }
 }
