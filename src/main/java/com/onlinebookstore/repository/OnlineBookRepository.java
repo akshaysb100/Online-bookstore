@@ -22,4 +22,5 @@ public interface OnlineBookRepository extends JpaRepository<Book,Long> {
 
     List<Book> findByAuthorContaining(String authorToSearch);
 
+    List<Book> findByOrderByPriceAsc();
 }

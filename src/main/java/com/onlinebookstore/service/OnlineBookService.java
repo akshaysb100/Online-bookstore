@@ -54,10 +54,7 @@ public class OnlineBookService {
     }
 
     public List<Book> sortByPrice() {
-        List<Book> book =onlineBookRepository.findAll();
-
-        List<Book> bookList = book.stream().sorted((o1, o2)->o1.getPrice().
-                compareTo(o2.getPrice())).collect(Collectors.toList());
+         List<Book> bookList = onlineBookRepository.findByOrderByPriceAsc();
         return  bookList;
     }
 }
